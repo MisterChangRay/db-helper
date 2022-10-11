@@ -5,12 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.changray.dbhelper.pojo.dto.BaseResult;
+import com.github.changray.dbhelper.pojo.dto.dbinfo.TableInfo;
 import com.github.changray.dbhelper.pojo.mapper.DbServersMapper;
 import com.github.changray.dbhelper.pojo.po.DbServers;
+import com.github.changray.dbhelper.databases.MySqlDBSourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @description db_servers控制器
@@ -23,6 +27,30 @@ public class DbServersController {
     static Logger logger = LoggerFactory.getLogger(GroupController.class.getName());
     @Autowired
     private DbServersMapper dbServersMapper;
+    @Autowired
+    private MySqlDBSourceService mySqlDbSourceService;
+
+
+
+    /**
+     * 显示链接所有数据库
+     */
+    @GetMapping("/loadDbs")
+    public BaseResult loadDbs(@RequestParam("dbId") String dbId){
+        logger.info("loadDbs:"+ JSON.toJSONString(dbId));
+        List<String> allDatabases = mySqlDbSourceService.getAllDatabases(dbId);
+        return BaseResult.success().setData(allDatabases);
+    }
+
+    /**
+     * 显示链接数据库所有表
+     */
+    @GetMapping("/loadTables")
+    public BaseResult loadTables(@RequestParam("dbId") String dbId, @RequestParam("dbName") String dbName){
+        logger.info("dbId: {}, dbName: {}", dbId, dbName);
+        List<TableInfo> allDatabases = mySqlDbSourceService.getAllTablels(dbId, dbName);
+        return BaseResult.success().setData(allDatabases);
+    }
 
     /**
      * 新增或编辑

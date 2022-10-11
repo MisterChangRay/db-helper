@@ -34,16 +34,15 @@ public class TaskVariableController {
         logger.info("dbServers:"+ JSON.toJSONString(taskVariable));
         TaskVariable oldTaskVariable = taskVariableMapper.selectOne(new QueryWrapper<TaskVariable>().eq("name",taskVariable.getName()));
         if(oldTaskVariable!=null){
-            taskVariable.setUpdateDate(new Date());
+            taskVariable.setUpdateTime(new Date());
             taskVariableMapper.updateById(taskVariable);
         }else{
-            taskVariable.setCreateDate(new Date());
-            taskVariable.setUpdateDate(new Date());
+            taskVariable.setCreateTime(new Date());
+            taskVariable.setUpdateTime(new Date());
             taskVariableMapper.insert(taskVariable);
         }
         return BaseResult.success();
     }
-
 
 
     /**

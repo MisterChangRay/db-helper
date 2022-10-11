@@ -47,6 +47,16 @@ public class DbServers implements Serializable {
     private String port;
 
 
+    private String connUri;
+
+    public String getConnUri() {
+        return connUri;
+    }
+
+    public void setConnUri(String connUri) {
+        this.connUri = connUri;
+    }
+
     public String getPort() {
         return port;
     }

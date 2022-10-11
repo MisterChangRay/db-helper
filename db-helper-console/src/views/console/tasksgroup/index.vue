@@ -104,6 +104,14 @@
             {
               text: "详情",
               emit: "custom-emit-detail"
+            },
+            {
+              text: "启动",
+              emit: "custom-emit-detail"
+            },
+            {
+              text: "停止",
+              emit: "custom-emit-detail"
             }
           ]
         },

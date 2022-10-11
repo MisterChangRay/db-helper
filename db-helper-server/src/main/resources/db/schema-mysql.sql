@@ -11,7 +11,7 @@
  Target Server Version : 80027
  File Encoding         : 65001
 
- Date: 09/10/2022 14:54:46
+ Date: 10/10/2022 15:48:21
 */
 
 SET NAMES utf8mb4;
@@ -29,8 +29,14 @@ CREATE TABLE `db_servers`  (
   `desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `port` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `db_type` int(0) NULL DEFAULT NULL COMMENT '数据库类型,0mysql',
+  `conn_uri` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '连接URI',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of db_servers
+-- ----------------------------
+INSERT INTO `db_servers` VALUES (1, '8.131.242.140', 'root', '2vKeG&1.3', '测试', '7501', NULL, '');
 
 -- ----------------------------
 -- Table structure for task
@@ -51,9 +57,25 @@ CREATE TABLE `task`  (
   `pager_ext` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '分页扩展字段',
   `update_time` datetime(0) NULL DEFAULT NULL,
   `script` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '脚本过滤',
-  `status` int(0) NULL DEFAULT NULL COMMENT '1运行,2暂停,3结束',
+  `status` int(0) NULL DEFAULT NULL COMMENT '1待执行,2正在执行,3暂停,4已完成',
+  `progress` int(0) NULL DEFAULT NULL COMMENT '预估进度0-100%',
+  `cron` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'cron调度',
+  `params` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '任务参数',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for task_executor
+-- ----------------------------
+DROP TABLE IF EXISTS `task_executor`;
+CREATE TABLE `task_executor`  (
+  `id` int(0) NOT NULL,
+  `task_id` int(0) NULL DEFAULT NULL,
+  `status` int(0) NULL DEFAULT NULL COMMENT '0未开始,1已经开始,2完成',
+  `keys` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for task_group
@@ -92,8 +114,8 @@ CREATE TABLE `task_variable`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `create_date` datetime(0) NULL DEFAULT NULL,
-  `update_date` datetime(0) NULL DEFAULT NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  `update_time` datetime(0) NULL DEFAULT NULL,
   `group_id` int(0) NULL DEFAULT NULL,
   `desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE

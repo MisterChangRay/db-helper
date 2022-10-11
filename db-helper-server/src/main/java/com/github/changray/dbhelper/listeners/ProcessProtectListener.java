@@ -1,6 +1,6 @@
 package com.github.changray.dbhelper.listeners;
 
-import com.github.changray.dbhelper.events.ConfigChangedEvent;
+import com.github.changray.dbhelper.events.GeneratorTaskExecutorEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -18,7 +18,7 @@ public class ProcessProtectListener {
 
 
 
-    @EventListener(value = {ConfigChangedEvent.class})
+    @EventListener(value = {GeneratorTaskExecutorEvent.class})
     public void configChanges() {
     }
 

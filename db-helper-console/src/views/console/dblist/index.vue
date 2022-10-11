@@ -147,6 +147,11 @@
             width: '150'
           },
           {
+            title: '连接URI',
+            key: 'connUri',
+            width: '150'
+          },
+          {
             title: '备注',
             key: 'desc',
             width: '150'
@@ -181,6 +186,14 @@
             value: '',
             component: {
               span: 11
+            }
+          },
+          connUri: {
+            title: '连接uri',
+            value: '',
+            component: {
+              placeholder: 'jdbcuri;',
+              span: 22
             }
           },
           desc: {
@@ -268,7 +281,7 @@
         this.formOptions.saveLoading = true
         let self = this;
 
-        monitorApi.APP_INFO_EDIT(row).then(res => {
+        apis.DB_SAVE(row).then(res => {
           self.$message({
             message: '修改成功',
             type: 'success'
@@ -284,7 +297,7 @@
         this.formOptions.saveLoading = true
         let self = this;
 
-        monitorApi.APP_INFO_DEL(row).then(res => {
+        apis.DB_DEL(row).then(res => {
           self.$message({
             message: '删除成功',
             type: 'success'
@@ -298,7 +311,7 @@
         this.formOptions.saveLoading = true
         let self = this;
 
-        monitorApi.APP_INFO_ADD(row).then(res => {
+        apis.DB_SAVE(row).then(res => {
           self.$message({
             message: '保存成功',
             type: 'success'

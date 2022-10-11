@@ -35,12 +35,12 @@ public class TaskVariable implements Serializable {
     /**
      * create_date
      */
-    private Date createDate;
+    private Date createTime;
 
     /**
      * update_date
      */
-    private Date updateDate;
+    private Date updateTime;
 
     /**
      * group_id
@@ -84,20 +84,21 @@ public class TaskVariable implements Serializable {
         this.value = value;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Date getUpdateDate() {
-        return updateDate;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Integer getGroupId() {

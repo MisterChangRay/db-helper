@@ -3,7 +3,7 @@ import faker from 'faker/locale/zh_CN'
 import { service, serviceForMock, request, requestForMock, mock } from '@/api/_service.js'
 import * as tools from '@/api/_tools.js'
 
-
+//////////////////////////////////////////////////
 /**
  * 
  * 数据库 保存
@@ -30,9 +30,46 @@ export function DB_LIST (param) {
   })
 }
 
+/**
+ * 数据库列表
+ * @description 列表
+ */
+ export function DB_DEL (param) {
+  return request({
+    url: '/dbtransfer/dbServers/del',
+    method: 'get',
+    params: param
+  })
+}
+
+/**
+ * 获取所有库
+ * @description 
+ */
+ export function DB_LIST_LOAD_DBS (param) {
+  return request({
+    url: '/dbtransfer/dbServers/loadDbs',
+    method: 'get',
+    params: param
+  })
+}
+
+
+/**
+ * 获取所有表
+ * @description 
+ */
+ export function DB_LIST_LOAD_TABLES (param) {
+  return request({
+    url: '/dbtransfer/dbServers/loadTables',
+    method: 'get',
+    params: param
+  })
+}
 
 
 
+//////////////////////////////////////////////////
 
 /**
  * 
