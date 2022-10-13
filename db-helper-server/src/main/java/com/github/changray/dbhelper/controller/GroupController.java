@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.changray.dbhelper.pojo.dto.BaseResult;
 import com.github.changray.dbhelper.pojo.mapper.TaskGroupMapper;
+import com.github.changray.dbhelper.pojo.mapper.TaskMapper;
 import com.github.changray.dbhelper.pojo.po.TaskGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,9 @@ public class GroupController {
     static Logger logger = LoggerFactory.getLogger(GroupController.class.getName());
     @Autowired
     private TaskGroupMapper taskGroupMapper;
+
+    @Autowired
+    private TaskMapper taskMapper;
 
     /**
      * 新增或编辑
@@ -73,5 +77,30 @@ public class GroupController {
         }
         return BaseResult.success();
     }
+
+
+
+    /**
+     * 启动所有任务
+     */
+    @GetMapping("/startall")
+    public BaseResult startall(@RequestParam (value = "id") String id){
+        logger.info("startall groupId:"+ JSON.toJSONString(id));
+        taskMapper.changeStatus(null, Integer.valueOf(id), 1);
+        return BaseResult.success();
+    }
+
+
+
+    /**
+     * 停止分组内所有任务
+     */
+    @GetMapping("/stopall")
+    public BaseResult stopall(@RequestParam (value = "id") String id){
+        logger.info("stopall groupId:"+ JSON.toJSONString(id));
+        taskMapper.changeStatus(null, Integer.valueOf(id), 3);
+        return BaseResult.success();
+    }
+
 
 }

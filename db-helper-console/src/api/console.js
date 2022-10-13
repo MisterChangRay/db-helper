@@ -113,6 +113,33 @@ export function TASKGROUP_LIST (param) {
 }
 
 
+
+/**
+ * 启动分组内所有任务
+ * @description 
+ */
+ export function TASKGROUP_STARTALL (param) {
+  return request({
+    url: '/dbtransfer/tasksgroup/startall',
+    method: 'get',
+    params: param
+  })
+}
+
+
+/**
+ * 暂停所有任务
+ * @description 
+ */
+ export function TASKGROUP_STOPALL (param) {
+  return request({
+    url: '/dbtransfer/tasksgroup/stopall',
+    method: 'get',
+    params: param
+  })
+}
+
+
 //////////////////////////////////////////////////
 
 /**
@@ -201,4 +228,27 @@ export function TASK_LIST (param) {
     params: param
   })
 }
+
+
+
+
+
+//////////////////////////////////////////////////
+
+/**
+ * 
+ * 任务管理 创建任务
+ * @description 
+ */
+ export function TASK_CREATE (param) {
+  return request({
+    url: '/dbtransfer/task/createTask',
+    method: 'post',
+    data: param
+  })
+}
+
+
+
+
 

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class TableInfo {
     private String name;
-    private List<String> pk;
+    private String pk;
 
     public String getName() {
         return name;
@@ -14,11 +14,11 @@ public class TableInfo {
         this.name = name;
     }
 
-    public List<String> getPk() {
+    public String getPk() {
         return pk;
     }
 
-    public void setPk(List<String> pk) {
+    public void setPk(String pk) {
         this.pk = pk;
     }
 }

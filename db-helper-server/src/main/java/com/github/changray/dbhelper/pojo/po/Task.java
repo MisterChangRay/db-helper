@@ -36,6 +36,7 @@ public class Task implements Serializable {
     /**
      * 执行sql
      */
+    @TableField(value = "`sql`")
     private String sql;
 
     /**

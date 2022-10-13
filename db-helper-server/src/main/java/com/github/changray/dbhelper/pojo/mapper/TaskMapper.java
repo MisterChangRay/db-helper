@@ -5,6 +5,7 @@ import com.github.changray.dbhelper.pojo.po.Task;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -65,5 +66,17 @@ public interface TaskMapper extends BaseMapper<Task> {
     // status 1待执行,2正在执行,3暂停,4已完成
     @Select("<script>select * from task  where status = 1  </script>")
     List<Task> getAllShouldGeneratorTaskRow();
+
+
+
+
+    // status 1待执行,2正在执行,3暂停,4已完成
+    @Update("<script>update task set status = #{status} " +
+            "where 1=1" +
+            "<when test='id!=null  '> and id=#{id}</when> " +
+            "<when test='groupId!=null '> and group_id=#{groupId}</when> " +
+            " </script>")
+    int changeStatus(@Param(value = "id") Integer taskId, @Param(value = "groupId") Integer groupId, @Param(value = "status") int status);
+
 
 }

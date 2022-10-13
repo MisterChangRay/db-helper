@@ -21,6 +21,8 @@
         @form-data-change="formDataChange"
         @row-add="handleRowAdd"
         @custom-emit-detail="showDetail"
+        @custom-emit-startall="startAll"
+        @custom-emit-stopall="stopAll"
         @dialog-cancel="handleDialogCancel">
         <el-button slot="header" style="margin-bottom: 5px" @click="addRow"><i class="fa fa-plus" aria-hidden="true"></i> 新增</el-button>
         <el-input slot="header" style="margin-bottom: 5px" v-model="query.keyword" placeholder="名称" > </el-input>
@@ -107,11 +109,11 @@
             },
             {
               text: "启动",
-              emit: "custom-emit-detail"
+              emit: "custom-emit-startall"
             },
             {
               text: "停止",
-              emit: "custom-emit-detail"
+              emit: "custom-emit-stopall"
             }
           ]
         },
@@ -174,6 +176,51 @@
       // 表单事件联动
       formDataChange({ key, value }) {
         let self = this;
+      },
+      startAll({index, row}) {
+        let self = this;
+        // 启动所有组内任务
+        this.$confirm("确认启动组内所有任务？", '提示', {
+          confirmButtonText:"确认",
+          cancelButtonTest: "取消"
+        }).then(function() {
+          apis.TASKGROUP_STARTALL({id:row.id}).then(function(res) {
+            if(res.code == 0) {
+              self.$message({
+                message: '操作成功',
+                type: 'success'
+              });
+            } else {
+              self.$message({
+                message: res.msg,
+                type: 'success'
+              });
+            }
+          })
+        })
+
+      },
+      stopAll({index, row}) {
+        let self = this;
+        // 停止所有组内任务
+        this.$confirm("确认停止组内所有任务？", '提示', {
+          confirmButtonText:"确认",
+          cancelButtonTest: "取消"
+        }).then(function() {
+          apis.TASKGROUP_STOPALL({id:row.id}).then(function(res) {
+            if(res.code == 0) {
+              self.$message({
+                message: '操作成功',
+                type: 'success'
+              });
+            } else {
+              self.$message({
+                message: res.msg,
+                type: 'success'
+              });
+            }
+          })
+        })
       },
       showDetail({index, row}) {
         this.detailDialogVisible = true;

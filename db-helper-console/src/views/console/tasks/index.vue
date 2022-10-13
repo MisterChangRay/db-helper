@@ -114,7 +114,7 @@
                   </el-tooltip>
                 </div>
 
-                <el-button type="primary" @click="createTransferNext">提交</el-button>
+                <el-button type="primary" @click="createTransferTask">提交</el-button>
               </el-form>
           </el-col>
             
@@ -352,6 +352,52 @@ export default {
     }
   },
   methods: {
+    createTransferTask() {
+
+      let self =this;
+      // 创建数据库迁移任务
+      let param = {
+        tables: undefined,
+        sourceDBId: undefined,
+        sourceDatabase: undefined,
+        targetDBId: undefined,
+        targetDatabase: undefined,
+        cron: undefined,
+        name: undefined,
+        desc: undefined,
+        groupId: undefined
+      }
+
+      param.tables = this.allTables;
+      param.name = this.transferForm.name;
+      param.cron = this.transferForm.cron;
+      param.desc = this.transferForm.desc;
+
+      param.sourceDBId = this.transferForm.source[0];
+      param.sourceDatabase = this.transferForm.source[1];
+      param.targetDBId = this.transferForm.target[0];
+      param.targetDatabase = this.transferForm.target[1];
+      param.groupId = this.transferForm.group;
+
+      
+      apis.TASK_CREATE(param).then(res => {
+        if(res.code == 0) {
+          self.$message({
+            message: '创建成功',
+            type: 'success'
+          });
+          self.dbTransferDialogVisible = false;
+        } else {
+          self.$message({
+            message: res.msg,
+            type: 'error'
+          });
+        }
+        
+      })
+
+
+    },
     rebuildSql() {
       let self = this;
       this.allTables.forEach(tmp => {

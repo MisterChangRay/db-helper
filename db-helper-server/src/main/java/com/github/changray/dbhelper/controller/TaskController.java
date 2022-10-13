@@ -66,7 +66,8 @@ public class TaskController {
             return BaseResult.fail(999, "请求错误");
         }
 
-        if(addTasks.getSourceDBId().equals(addTasks.getTargetDBId())) {
+        if(addTasks.getSourceDBId().equals(addTasks.getTargetDBId()) &&
+            addTasks.getSourceDatabase().equals(addTasks.getTargetDatabase())) {
             return BaseResult.fail(999, "源库和目标库不能相同");
         }
 
@@ -81,8 +82,8 @@ public class TaskController {
             task.setDesc(addTasks.getDesc());
             task.setName(addTasks.getName());
             task.setGroupId(addTasks.getGroupId());
-            task.setSql(String.format("select * from %s", table));
-            task.setStatus(2);
+            task.setSql(String.format("select * from %s", table.getName()));
+            task.setStatus(3);
             task.setCron(addTasks.getCron());
             task.setParams(JSON.toJSONString(addTasks));
             taskMapper.insert(task);
