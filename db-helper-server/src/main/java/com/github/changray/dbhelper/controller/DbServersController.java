@@ -4,11 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.changray.dbhelper.databases.MySqlDBSourceService;
 import com.github.changray.dbhelper.pojo.dto.BaseResult;
 import com.github.changray.dbhelper.pojo.dto.dbinfo.TableInfo;
 import com.github.changray.dbhelper.pojo.mapper.DbServersMapper;
 import com.github.changray.dbhelper.pojo.po.DbServers;
-import com.github.changray.dbhelper.databases.MySqlDBSourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/dbServers")
 public class DbServersController {
-    static Logger logger = LoggerFactory.getLogger(GroupController.class.getName());
+    static Logger logger = LoggerFactory.getLogger(DbServersController.class.getName());
     @Autowired
     private DbServersMapper dbServersMapper;
     @Autowired

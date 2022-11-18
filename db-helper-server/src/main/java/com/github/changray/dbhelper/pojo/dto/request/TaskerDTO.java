@@ -2,7 +2,7 @@ package com.github.changray.dbhelper.pojo.dto.request;
 
 import com.github.changray.dbhelper.pojo.dto.dbinfo.TableInfo;
 
-public class AddTasks {
+public class TaskerDTO {
     private TableInfo[] tables;
     private String sourceDBId;
     private String sourceDatabase;

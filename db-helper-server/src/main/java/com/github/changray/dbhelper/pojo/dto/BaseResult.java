@@ -78,7 +78,8 @@ public class BaseResult<T> {
         return msg;
     }
 
-    public void setMsg(String msg) {
+    public BaseResult setMsg(String msg) {
         this.msg = msg;
+        return this;
     }
 }

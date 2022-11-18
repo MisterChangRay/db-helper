@@ -186,63 +186,17 @@ export function TASK_VARIABLE_LIST (param) {
 
 
 
-//////////////////////////////////////////////////
+// //////////////////////////////////////////////////
 
-/**
- * 
- * 任务管理 新增
- * @description 
- */
- export function TASK_SAVE (param) {
-  return request({
-    url: '/dbtransfer/task_variable/save',
-    method: 'post',
-    data: param
-  })
-}
-
-
-/**
- * 任务管理
- * @description 列表
- */
-export function TASK_LIST (param) {
-  return request({
-    url: '/dbtransfer/task_variable/list',
-    method: 'get',
-    params: param
-  })
-}
-
-
-
-
-/**
- * 任务管理
- * @description 删除
- */
- export function TASK_DEL (param) {
-  return request({
-    url: '/dbtransfer/task_variable/del',
-    method: 'get',
-    params: param
-  })
-}
-
-
-
-
-
-//////////////////////////////////////////////////
 
 /**
  * 
  * 任务管理 创建任务
  * @description 
  */
- export function TASK_CREATE (param) {
+ export function TASK_SAVE (param) {
   return request({
-    url: '/dbtransfer/task/createTask',
+    url: '/dbtransfer/task/save',
     method: 'post',
     data: param
   })
@@ -250,5 +204,17 @@ export function TASK_LIST (param) {
 
 
 
+
+/**
+ * 变量管理
+ * @description 列表
+ */
+ export function TASK_LIST (param) {
+  return request({
+    url: '/dbtransfer/task/list',
+    method: 'get',
+    params: param
+  })
+}
 
 

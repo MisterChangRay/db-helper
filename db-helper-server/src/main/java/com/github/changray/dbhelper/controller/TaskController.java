@@ -6,21 +6,19 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.changray.dbhelper.pojo.dto.BaseResult;
 import com.github.changray.dbhelper.pojo.dto.dbinfo.TableInfo;
-import com.github.changray.dbhelper.pojo.dto.request.AddTasks;
+import com.github.changray.dbhelper.pojo.dto.request.TaskDTO;
+import com.github.changray.dbhelper.pojo.dto.request.TaskerDTO;
 import com.github.changray.dbhelper.pojo.mapper.TaskMapper;
-import com.github.changray.dbhelper.pojo.mapper.TaskVariableMapper;
+import com.github.changray.dbhelper.pojo.mapper.TaskerMapper;
 import com.github.changray.dbhelper.pojo.po.Task;
-import com.github.changray.dbhelper.pojo.po.TaskVariable;
+import com.github.changray.dbhelper.pojo.po.Tasker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -34,22 +32,16 @@ public class TaskController {
     static Logger logger = LoggerFactory.getLogger(TaskController.class.getName());
     @Autowired
     private TaskMapper taskMapper;
+    @Autowired
+    private TaskerMapper taskerMapper;
+
 
     /**
      * 新增或编辑
      */
-    @PostMapping("/save")
-    public BaseResult save(@RequestBody Task task){
+    @PostMapping("/start")
+    public BaseResult start(@RequestBody Task task){
         logger.info("task:"+ JSON.toJSONString(task));
-        Task oldTaskVariable = taskMapper.selectOne(new QueryWrapper<Task>().eq("name",task.getName()));
-        if(oldTaskVariable!=null){
-            task.setUpdateTime(new Date());
-            taskMapper.updateById(task);
-        }else{
-            task.setCreateTime(new Date());
-            task.setUpdateTime(new Date());
-            taskMapper.insert(task);
-        }
         return BaseResult.success();
     }
 
@@ -57,39 +49,86 @@ public class TaskController {
     /**
      * 新增或编辑
      */
-    @PostMapping("/createTask")
+    @PostMapping("/stop")
+    public BaseResult stop(@RequestBody Task task){
+        logger.info("task:"+ JSON.toJSONString(task));
+        return BaseResult.success();
+    }
+
+
+
+    /**
+     * 新增或编辑
+     *
+     * 已经开始执行的任务不允许编辑， 只能删除重建
+     *
+     */
+    @PostMapping("/save")
     @Transactional
-    public BaseResult createTask(@RequestBody AddTasks addTasks){
-        logger.info("创建批量任务:"+ JSON.toJSONString(addTasks));
+    public BaseResult save(@RequestBody TaskDTO task){
+        logger.info("task:"+ JSON.toJSONString(task));
 
-        if(Objects.isNull(addTasks)) {
-            return BaseResult.fail(999, "请求错误");
-        }
-
-        if(addTasks.getSourceDBId().equals(addTasks.getTargetDBId()) &&
-            addTasks.getSourceDatabase().equals(addTasks.getTargetDatabase())) {
+        TaskerDTO taskerDTO = task.getTasker();
+        if(taskerDTO.getSourceDBId().equals(taskerDTO.getTargetDBId()) &&
+                taskerDTO.getSourceDatabase().equals(taskerDTO.getTargetDatabase())) {
             return BaseResult.fail(999, "源库和目标库不能相同");
         }
 
-        if(Objects.isNull(addTasks.getTables()) || addTasks.getTables().length == 0) {
+        if(Objects.isNull(taskerDTO.getTables()) || taskerDTO.getTables().length == 0) {
             return BaseResult.fail(999, "没有需要迁移表");
         }
 
-        for (TableInfo table : addTasks.getTables()) {
-            Task task = new Task();
-            task.setCreateTime(new Date());
-            task.setUpdateTime(new Date());
-            task.setDesc(addTasks.getDesc());
-            task.setName(addTasks.getName());
-            task.setGroupId(addTasks.getGroupId());
-            task.setSql(String.format("select * from %s", table.getName()));
-            task.setStatus(3);
-            task.setCron(addTasks.getCron());
-            task.setParams(JSON.toJSONString(addTasks));
-            taskMapper.insert(task);
+        int taskerCount = task.getTasker().getTables().length;
+        Task row = null;
+        if(Objects.nonNull(task.getId())) {
+            row = taskMapper.selectById(task.getId());
+            if(row.getStatus() != 0) {
+                return BaseResult.success().setMsg("已开始的任务不允许修改！");
+            }
+
+            buildTasker(task);
+            row.setName(task.getName());
+            row.setDesc(task.getDesc());
+            row.setTaskerCount(taskerCount);
+            taskMapper.updateById(row);
+            return BaseResult.success().setMsg("修改成功");
+        } else {
+            row = new Task();
+            row.setName(task.getName());
+            row.setDesc(task.getDesc());
+            row.setCreateTime(new Date());
+            row.setTaskerCount(0);
+            row.setTaskerRanCount(0);
+            row.setStatus(0);
+            row.setTaskerCount(taskerCount);
+
+            taskMapper.insert(row);
+            task.setId(row.getId());
         }
 
-        return BaseResult.success();
+        buildTasker(task);
+
+
+        return BaseResult.success().setMsg("新增成功");
+    }
+
+    private void buildTasker(TaskDTO task) {
+        TaskerDTO taskerDTO = task.getTasker();
+
+        for (TableInfo table : taskerDTO.getTables()) {
+            Tasker tasker = new Tasker();
+            tasker.setTaskId(task.getId());
+            tasker.setCreateTime(new Date());
+            tasker.setUpdateTime(new Date());
+            tasker.setDesc(taskerDTO.getDesc());
+            tasker.setName(taskerDTO.getName());
+            tasker.setSql(String.format("select * from %s", table.getName()));
+            tasker.setStatus(3);
+            tasker.setCron(taskerDTO.getCron());
+            tasker.setBatchSize(1000);
+            tasker.setSleepTime(1);
+            taskerMapper.insert(tasker);
+        }
     }
 
 

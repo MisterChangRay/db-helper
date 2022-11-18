@@ -5,13 +5,16 @@
         :add-rules="addRules" :edit-rules="addRules" :form-options="formOptions" :pagination="pagination"
         :loading="loading" :add-template="addTemplate" :edit-template="addTemplate" @row-remove="handleRowRemove"
         @row-edit="handleRowEdit" @pagination-current-change="paginationCurrentChange" @dialog-open="handleDialogOpen"
-        @form-data-change="formDataChange" @row-add="handleRowAdd" @custom-emit-detail="showDetail"
+        @form-data-change="formDataChange" @row-add="handleRowAdd" 
+        @custom-emit-detail="showDetail"
+        @custom-emit-start="startTask"
+        @custom-emit-stop="stopTask"
         @dialog-cancel="handleDialogCancel">
         <el-button slot="header" style="margin-bottom: 5px" @click="transferdb"><i class="fa fa-plus"
-            aria-hidden="true">导库向导</i> </el-button>
+            aria-hidden="true">Mysql迁移向导</i> </el-button>
         <el-button slot="header" style="margin-bottom: 5px" @click="addRow"><i class="fa fa-plus"
             aria-hidden="true">新增任务</i> </el-button>
-        <el-input slot="header" style="margin-bottom: 5px;margin-left:5px" v-model="query.keyword" placeholder="名称或描述">
+        <el-input slot="header" style="margin-bottom: 5px;margin-left:5px; width: 200px;" v-model="query.keyword" placeholder="名称或描述">
         </el-input>
         <el-select slot="header" v-model="query.group" clearable filterable placeholder="所属分组">
           <el-option v-for="item in groupOptions" :key="item.value" :label="item.label" :value="item.value">
@@ -35,7 +38,7 @@
     </el-dialog>
 
 
-    <el-dialog title="数据迁移向导" :visible.sync="dbTransferDialogVisible" width="80%">
+    <el-dialog title="MYSQL数据迁移向导" :visible.sync="dbTransferDialogVisible" width="80%">
       <el-tabs v-model="activeName" >
         <el-tab-pane label="数据库配置" name="first">
           <el-form ref="transferFormRef" :model="transferForm" label-width="150px">
@@ -49,20 +52,7 @@
                 <el-input v-model="transferForm.desc"></el-input>
               </el-col>
             </el-form-item>
-            <el-form-item label="所属分组" prop="desc">
-              <el-col :span="5">
-                <el-select v-model="transferForm.group" placeholder="请选择">
-                  <el-option v-for="item in TASKGROUP_LIST" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-col>
-              <el-col :span="9">
-                <el-form-item label="执行表达式(cron)" prop="desc">
-                  <el-autocomplete class="inline-input" v-model="transferForm.cron"
-                    :fetch-suggestions="queryCronSuggest" placeholder="请输入内容" @select="handleSelect"></el-autocomplete>
-                </el-form-item>
-              </el-col>
-            </el-form-item>
+
             <el-form-item label="同步配置(从源库):">
               <el-col :span="5">
                 <el-form-item prop="source">
@@ -208,11 +198,20 @@ export default {
           }
         },
         custom: [
-          {
-            text: "详情",
-            emit: "custom-emit-detail"
-          }
-        ]
+            {
+              text: "详情",
+              emit: "custom-emit-detail"
+            },
+            {
+              text: "启动",
+              emit: "custom-emit-start"
+            },
+            {
+              text: "停止",
+              emit: "custom-emit-stop"
+            }
+          ]
+    
       },
       columns: [
         {
@@ -226,30 +225,22 @@ export default {
           width: '150'
         },
         {
-          title: '最近执行时间',
-          key: 'lastRunTime',
-          width: '150',
-        },
-        {
-          title: '执行次数',
-          key: 'runCounter',
-          width: '150'
-        },
-        {
-          title: '进度',
-          key: 'progress',
-          width: '150'
-        },
-        {
           title: '状态',
           key: 'status',
+          width: '150',
+          formatter: this.statusFormatter
+        },
+        {
+          title: '任务数',
+          key: 'taskerCount',
           width: '150'
         },
         {
-          title: '所属分组',
-          key: 'group',
+          title: '剩余任务数',
+          key: 'taskerRanCount',
           width: '150'
         }
+       
       ],
       data: [],
       addTemplate: {
@@ -357,6 +348,45 @@ export default {
       let self =this;
       // 创建数据库迁移任务
       let param = {
+        tasker: {
+          tables: self.allTables
+        },
+        name: self.transferForm.name,
+        desc: self.transferForm.desc
+      }
+
+      
+      param.tasker.tables = self.allTables;
+      param.tasker.name = self.transferForm.name;
+      param.tasker.desc = self.transferForm.desc;
+      param.tasker.cron = self.transferForm.cron;
+      param.tasker.sourceDBId = self.transferForm.source[0];
+      param.tasker.sourceDatabase = self.transferForm.source[1];
+      param.tasker.targetDBId = self.transferForm.target[0];
+      param.tasker.targetDatabase = self.transferForm.target[1];
+
+
+      apis.TASK_SAVE(param).then(res => {
+        if(res.code == 0) {
+          self.$message({
+            message: '创建成功',
+            type: 'success'
+          });
+          self.dbTransferDialogVisible = false;
+        } else {
+          self.$message({
+            message: res.msg,
+            type: 'error'
+          });
+        }
+        
+      })
+    },
+    createTransferTask2() {
+
+      let self =this;
+      // 创建数据库迁移任务
+      let param = {
         tables: undefined,
         sourceDBId: undefined,
         sourceDatabase: undefined,
@@ -370,14 +400,14 @@ export default {
 
       param.tables = this.allTables;
       param.name = this.transferForm.name;
-      param.cron = this.transferForm.cron;
       param.desc = this.transferForm.desc;
+      
+      param.cron = this.transferForm.cron;
 
       param.sourceDBId = this.transferForm.source[0];
       param.sourceDatabase = this.transferForm.source[1];
       param.targetDBId = this.transferForm.target[0];
       param.targetDatabase = this.transferForm.target[1];
-      param.groupId = this.transferForm.group;
 
       
       apis.TASK_CREATE(param).then(res => {
@@ -470,7 +500,6 @@ export default {
           self.rebuildSql();
           console.log(333333333333333, self.dbTables)
         })
-
       }
     },
     transferdb() {
@@ -480,12 +509,18 @@ export default {
     },
     statusFormatter(row, column, cellValue, index) {
       if (cellValue == '0') {
-        return "未激活"
+        return "待执行"
       }
       if (cellValue == '1') {
-        return "在线"
+        return "执行中"
       }
-      return "离线"
+      if (cellValue == '3') {
+        return "暂停"
+      }
+      if (cellValue == '4') {
+        return "已完成"
+      }
+      return ""
     },
     formatSelectLabel(item) {
       if (item.desc) {
@@ -510,9 +545,17 @@ export default {
       this.detailDialogVisible = true;
       this.detailRow = row;
     },
+    startTask({ index, row }) {
+      // 启动任务
+
+    },
+    stopTask({ index, row }) {
+      // 停止任务
+
+    },
     init() {
       let self = this;
-      apis.TASKGROUP_LIST({}).then(res => {
+      apis.TASK_LIST({}).then(res => {
 
         self.TASKGROUP_LIST = [];
         res.data.list.forEach(tmp => {
@@ -613,13 +656,12 @@ export default {
     fetchData() {
       this.loading = true
       var self = this;
-      apis.DB_LIST(this.query).then(res => {
+      apis.TASK_LIST(this.query).then(res => {
         this.data = res.data.list
         this.data.forEach(tmp => {
           tmp.showRemoveButton = true;
-          tmp.showEditButton = true;
-          // 有通讯则不可删除
-          if (tmp.reportTime) {
+          tmp.showEditButton = false;
+          if (tmp.status == 2 || tmp.status == 3) {
             tmp.forbidRemove = false;
           }
         })
