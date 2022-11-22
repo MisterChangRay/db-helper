@@ -7,7 +7,7 @@ export default {
     { path: '/console/tasks_variable/index', title: '环境变量', icon: 'hdd-o' },
     { path: '/console/dblist/index', title: '数据库列表', icon: 'tasks' },
     { path: '/console/tasks/index', title: '任务列表', icon: 'hdd-o' },
-    { path: '/console/tasksgroup/index', title: '任务执行器', icon: 'hdd-o' },
+    { path: '/console/tasker/index', title: '任务执行器', icon: 'hdd-o' },
     { path: '/console/taskslog/index', title: '任务日志', icon: 'hdd-o' },
   ]
 }

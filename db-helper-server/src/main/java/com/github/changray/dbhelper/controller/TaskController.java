@@ -39,9 +39,11 @@ public class TaskController {
     /**
      * 新增或编辑
      */
-    @PostMapping("/start")
-    public BaseResult start(@RequestBody Task task){
-        logger.info("task:"+ JSON.toJSONString(task));
+    @PostMapping("/start/{id}")
+    public BaseResult start(@PathVariable String id){
+        logger.info("start task:"+ id);
+
+
         return BaseResult.success();
     }
 

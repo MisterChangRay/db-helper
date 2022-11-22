@@ -218,3 +218,22 @@ export function TASK_VARIABLE_LIST (param) {
 }
 
 
+
+// //////////////////////////////////////////////////
+
+
+
+
+/**
+ * tasker list
+ * @description 列表
+ */
+ export function TASKER_LIST (param) {
+  return request({
+    url: '/dbtransfer/tasker/list',
+    method: 'get',
+    params: param
+  })
+}
+
+

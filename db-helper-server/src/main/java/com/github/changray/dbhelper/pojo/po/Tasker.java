@@ -52,7 +52,7 @@ public class Tasker implements Serializable {
     /**
      * last_run_time
      */
-    private Date lastRunTime;
+    private Date runTime;
 
     /**
      * 执行次数
@@ -98,6 +98,35 @@ public class Tasker implements Serializable {
 
 
     private Integer sleepTime;
+
+    private Integer type;
+
+    private Integer totalSpendTime;
+
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Date getRunTime() {
+        return runTime;
+    }
+
+    public void setRunTime(Date runTime) {
+        this.runTime = runTime;
+    }
+
+    public Integer getTotalSpendTime() {
+        return totalSpendTime;
+    }
+
+    public void setTotalSpendTime(Integer totalSpendTime) {
+        this.totalSpendTime = totalSpendTime;
+    }
 
     public Integer getBatchSize() {
         return batchSize;
@@ -185,13 +214,7 @@ public class Tasker implements Serializable {
         this.endTime = endTime;
     }
 
-    public Date getLastRunTime() {
-        return lastRunTime;
-    }
 
-    public void setLastRunTime(Date lastRunTime) {
-        this.lastRunTime = lastRunTime;
-    }
 
     public Integer getRunCounter() {
         return runCounter;

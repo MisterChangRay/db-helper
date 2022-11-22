@@ -17,7 +17,7 @@ export default {
     { path: 'tasks_variable/index', name: 'console-tasks-variable-index', component: _import('console/tasks_variable/index.vue'), meta: { ...meta, title: '环境变量' } },
     { path: 'dblist/index', name: 'console-components-dblist-index', component: _import('console/dblist/index.vue'), meta: { ...meta, title: '应用列表' } },
     { path: 'tasks/index', name: 'console-components-tasks-index', component: _import('console/tasks/index.vue'), meta: { ...meta, title: '任务列表' } },
-    { path: 'tasksgroup/index', name: 'console-components-tasks-group-index', component: _import('console/tasksgroup/index.vue'), meta: { ...meta, title: '任务分组列表' } },
+    { path: 'tasker/index', name: 'console-components-tasker-index', component: _import('console/tasker/index.vue'), meta: { ...meta, title: '任务分组列表' } },
     { path: 'taskslog/index', name: 'console-components-taskslog-index', component: _import('console/taskslog/index.vue'), meta: { ...meta, title: '任务日志' } },
 
   ]

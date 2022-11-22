@@ -17,6 +17,8 @@ import java.util.List;
 @Mapper
 public interface TaskMapper extends BaseMapper<Task> {
 
-
-
+    @Update("<script>" +
+            "update task set status = 2 where id = #{taskId} limit 1" +
+            " </script>")
+    void markStatusRunning(Integer taskId);
 }
